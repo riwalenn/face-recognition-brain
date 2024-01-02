@@ -2,6 +2,12 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Before npm start
+- in index.js : change `import App from './App_';` To `import App from './App';`
+- in App.js : change clarifai PAT with your API Key (in your security tab).
+- in App.js : change USER_ID with your USER ID (under the app name - text in blue).
+- in App.js : change APP_ID with your APP ID (App name).
+
 ## Available Scripts
 
 In the project directory, you can run:
