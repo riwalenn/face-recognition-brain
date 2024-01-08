@@ -77,7 +77,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:3000')
+        fetch('http://localhost:3000')//port 3001 if you using it in local with the server
             .then(response => response.json())
             .then(console.log);
     }
