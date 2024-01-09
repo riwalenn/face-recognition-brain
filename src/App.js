@@ -9,43 +9,6 @@ import './App.css';
 import SignIn from "./components/SignIn/SignIn";
 import Register from "./components/Register/Register";
 
-const returnCarifaiRequestOptions = (imageUrl) => {
-    // Your PAT (Personal Access Token) can be found in the portal under Authentification
-    const PAT = 'YOUR_PAT_HERE';
-    // Specify the correct user_id/app_id pairings
-    // Since you're making inferences outside your app's scope
-    const USER_ID = 'clarifai';
-    const APP_ID = 'main';
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
-    ///////////////////////////////////////////////////////////////////////////////////
-    const raw = JSON.stringify({
-        "user_app_id": {
-            "user_id": USER_ID,
-            "app_id": APP_ID
-        },
-        "inputs": [
-            {
-                "data": {
-                    "image": {
-                        "url": imageUrl
-                    }
-                }
-            }
-        ]
-    });
-
-    return {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Key ' + PAT
-        },
-        body: raw
-    };
-};
-
 const initialState = {
     input: '',
     imageUrl: '',
@@ -77,7 +40,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:3000')//port 3001 if you using it in local with the server
+        fetch('http://localhost:3001')//port 3001 if you using it in local with the server
             .then(response => response.json())
             .then(console.log);
     }
@@ -105,8 +68,13 @@ class App extends Component {
 
     onPictureSubmit = () => {
         this.setState({imageUrl: this.state.input});
-
-        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", returnCarifaiRequestOptions(this.state.input))
+        fetch('http://localhost:3000/imageurl', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                input: this.state.input
+            })
+        })
             .then(response => response.json())
             .then(response => {
                 if (response) {
@@ -119,13 +87,14 @@ class App extends Component {
                     })
                         .then(response => response.json())
                         .then(count => {
-                            this.setState(Object.assign(this.state.user, { entries: count }))
+                            this.setState(Object.assign(this.state.user, { entries: count}))
                         })
-                        .catch(err => console.error(err));
+                        .catch(console.log)
+
                 }
                 this.displayFaceBox(this.calculateFaceLocation(response))
             })
-            .catch(err => console.error(err));
+            .catch(err => console.log(err));
     }
 
     onRouteChange = (route) => {
